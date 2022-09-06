@@ -1,0 +1,162 @@
+---
+title: "AFS 505 HW1"
+author: "Aaron Appleby"
+date: "2022-09-01"
+output: html_document
+---
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+1.
+a) __Engine1__
+
+
+```{r Engine1}
+# Create a vector with engine specifications in SI units (l, kW).
+#combine or concatenate **c** function is used to create a vector.
+#name vector with quotes " " and set equal to value
+eng1 <- c("Displacement (cc)"=163.00, "Net Power Out (kW)"=3.60, "Net Torque (Nm)"=10.30, "Oil Capacity (l)"=0.58, "Fuel Tank Capacity (l)"=3.10)
+eng1
+
+# Inquire about vector type.
+typeof(eng1)
+
+# Inquire about vector attributes.
+attributes(eng1)
+#vector names are considered meta data
+##playing with style to distinguish command notes and helpful/reminder notes
+
+# Inquire about vector object's names
+names(eng1)
+
+# Examine a data object of vector
+str(eng1)
+
+# Inquire if vector has only a single data type (atomic vector)
+is.atomic(eng1)
+```
+This is a 1 dimensional, double precision numeric (numeric), atomic vector.  The vector has a length of 5 named, numeric values.
+
+1.
+b) __Engine2__
+
+```{r Engine2}
+# Create a vector with engine specifications using data type (character).
+eng2 <- c("Displacement (cc)"="163.00", "Net Power Out (kW)"="3.60", "Net Torque (Nm)"="10.30", "Oil Capacity (l)"="0.58", "Fuel Tank Capacity (l)"="3.10")
+eng2
+
+# Inquire about vector type.
+typeof(eng2)
+
+# Inquire about vector attributes.
+attributes(eng2)
+#vector names are considered meta data
+##playing with style to distinguish command notes and helpful/reminder notes
+
+# Inquire about vector object's names.
+names(eng2)
+
+# Examine a data object of vector.
+str(eng2)
+
+# Inquire if vector has only a single data type (atomic vector).
+is.atomic(eng2)
+#is an atomic vector even though R recognizes the names of the vector values as characters 
+  ###(Must not be part of the vector???)
+```
+This is a 1 dimensional, ___character___, atomic vector. The vector has a length of 5 named character values.
+
+By adding the quotes "" around the vector values they are read as character values rather than numeric values as Engine 1 from the previous question
+
+
+2. __Family__
+
+```{r Family}
+# Create a character atomic vector with family members' titles and names.
+fam <- c("Me"="Hip-P", "Wife"="Cam Bam", "Daughter"="Bindi", "Son"="Mumford")
+fam
+```
+
+3. __Matrices__
+a)
+
+A bit of matrix review:
+A **matrix** in R is a 2-dimensional data structure. 
+A **matrix** holds a row (n) by collumn (m) grid of values
+  [always in that order (row, collumn)]. 
+As with atomic vectors, a matrix must contain values of just one data type.
+(does name count toward data type??? ___not in vectors___)
+
+'byrow' by default is FALSE, so **data is read in (input) column-wise first
+
+```{r matrix}
+# 'data' is a vector
+# 'nrow' gives the number of rows
+# 'ncol' gives the number of columns
+# 'byrow' by default is FALSE, so data is read in column-wise
+vect <- c(-3.3, 8.2, 19.7, -1.0, 10.5, 22.0, 1.3, 12.8, 24.3, 3.6, 15.1, 26.6, 5.9, 17.4, 28.9)
+mat <- matrix(data = vect, nrow = 3, ncol = 5)
+#colnames and rownames functions are used to address column and row name attributes
+colnames(mat) <- c("AA", "BB", "CC", "DD", "EE")
+mat
+
+# Look at attributes.
+attributes(mat)
+# Create a line space in output (for readability).
+cat("\n") 
+# Examine attributes of matrix.
+str(mat)
+```
+
+This is a two-dimensional, numeric matrix with column names.  The matrix contains 3 rows without names and 5 columns with names.
+
+3. __Matrices__
+b) arithmetic 
+
+```{r matrix arithmetic}
+# Add 3.3 to matrix
+mat+3.3
+
+# Divide matrix by 2.3
+mat/2.3
+
+# Original matrix
+mat
+```
+
+An operation applied to the matrix is applied to every value within the matrix.
+
+3. __Matrices__
+  c) row and column manipulation
+
+```{r matrix manipulation}
+# Change the dimensions of the matrix.
+#these save in the environment
+dim(mat) <- c(5,3)
+mat
+cat("\n")
+#prints a line space in output
+str(mat)
+```
+
+This is a two-dimensional, numeric matrix.  The matrix contains 5 rows and 3 columns without names. The matrix contains the same vector as before and populates by column first.
+
+3. __Matrices__
+d) truncate
+
+```{r matrix truncation}
+# Truncate the numeric values in matrix.
+#this does not save to the environment
+# Create a new data set of the truncated matrix.
+mat1 <- trunc(mat)
+# View truncated matrix.
+mat1
+cat("\n")
+str(mat1)
+```
+
+This is a two-dimensional, numeric matrix.  The matrix contains 5 rows and 3 columns without names. The matrix contains the same vector as before but truncates the numeric values.

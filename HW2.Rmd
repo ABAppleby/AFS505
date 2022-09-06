@@ -1,0 +1,137 @@
+---
+title: "AFS 505 HW2"
+author: "Aaron Appleby"
+date: "2022-09-03"
+output: html_document
+---
+
+#HW2
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+1.
+a) __crop vector__
+
+
+```{r crop vector}
+# Create a vector containing different crop names.
+#combine or concatenate **c** function is used to create a vector.
+
+crop <- c("apples", "wheat", "soybeans", "potatoes", "grapes", "cherries", "almonds", "hay", "hops")
+crop
+```
+
+1.
+b) __address vector__
+
+Addressing allows for concise data reshaping, extraction and assignment in R.
+
+```{r address}
+## assignment - indexing w/ Brackets []
+###Addressing locations with brackets calls vector value at vector position indicated within brackets.
+###Addressing locations with brackets can also be used to make assignments, to store data in particular locations within a vector.
+# Replace soybeans with oranges.
+crop[3] <- "oranges"
+crop
+cat("\n")
+#create a new vector using a subset of the previous vector
+crop[c(1, 2, 4, 5, 6, 8, 9)]
+
+cat("\n") #create line space
+
+## Address with logical vectors & []
+#You can also extract with logical vectors the same length as the vector being addressed inside [].
+crop[c(T, T, F, T, T, T, F, T,  T)]
+```
+
+1.
+c. __reorder vector__
+
+```{r reorder}
+# Create a new vector using a subset of the previous vector.
+major <- crop[c(1, 2, 4, 5, 6, 8, 9)]
+major
+cat("\n")
+
+# Reorder new vector.
+major[c(1, 4, 5, 3, 7, 2, 6)]
+cat("\n")
+
+# Reorder new vector alphabetically using order()
+major[order(major)]
+```
+
+2. __Matrices__
+a) __positive indices__
+
+
+Addressing applies to matrices and data frames in much the same way as to vectors.
+
+```{r matrix}
+# 'data' is a vector
+# 'nrow' gives the number of rows
+# 'ncol' gives the number of columns
+# 'byrow' by default is FALSE, so data is read in column-wise
+vect <- c(1, 6, 11, 16, 2, 7, 12, 17, 3, 8, 13, 18, 4, 9, 14, 19, 5, 10, 15, 20)
+vect1 <- c(1:20)
+mat1 <- matrix(data = vect1, nrow = 4, ncol = 5, byrow = T)
+mat1
+#two of the same matrices created with two different vectors and read in methods
+cat("\n")
+mat <- matrix(data = vect, nrow = 4, ncol = 5)
+mat
+cat("\n")
+# As with vectors, matrices can be subsetted, addressed and assigned with square brackets. The difference is that the square brackets contain two parts **[??,??]**, addressing row and column dimensions.
+mat[2:4, 3:4]
+cat("\n")
+# when addressing non sequential values the c() command is needed
+mat[2, c(1,3,5)]
+```
+
+2. __Matrices__
+b) __subset with negative indices__
+
+As with vectors, we can also remove rows or columns with negative indices. For a given dimension, all indices must be positive or all must be negative.
+
+```{r matrix with negative values}
+#  Extract a subsets from the previous matrix using negative indices
+mat[-3, ]
+cat("\n")
+mat[-2, c(-3,-5)]
+cat("\n")
+###there is more than one way to do the same thing in R
+# Recreate the same matrix subsets as above
+mat[c(1,2,4), 1:5]
+cat("\n")
+mat[c(1,3,4), c(1,2,4)]
+```
+
+3. __Matrices__
+c) __replace values__
+
+*Assign* values  to specific locations with addressing brackets [].
+
+```{r matrix duplication and manipulation}
+# Recall the last matrix
+mat
+cat("\n")
+# Create a duplicate matrix for each step so original matrix remains unaltered
+#already did this earlier
+mat1
+cat("\n")
+# Replace 9, 14, and 19 with 88.
+mat1[c(2:4), 4] <- 88
+mat1
+cat("\n")
+# Replace 9, 14, and 19 with 23, 24, 25.
+mat2 <- mat
+mat2[c(2:4), 4] <- c(23:25)
+mat2
+cat("\n")
+# Remove the value 8
+mat3 <- mat
+mat3[2,3] <- NA
+mat3
+```
