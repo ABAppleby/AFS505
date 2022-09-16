@@ -1,0 +1,214 @@
+---
+title: "AFS 505 HW3"
+author: "Aaron Appleby"
+date: "2022-09-12"
+output: pdf_document
+---
+
+#HW3
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. __Simple Lists__
+a) __list 1__
+
+
+```{r list 1}
+# Create a list containing different vectors and matricies.
+##create a list with the **list()** function.
+# we can construct a list by stringing together multiple objects
+a = "Soils 502" 
+b = c(1, 3, 4, 5) 
+c = matrix(seq(1:6),3,2, byrow = T)
+
+
+my_list = list(a, b, c)   
+# contains copies of a, b, c
+my_list
+```
+
+Addressing allows for concise data reshaping, extraction and assignment in R.
+
+```{r extract}
+# Extract matrix from list 1.
+my_list[3]
+cat("\n")
+
+# Extract a and c twice
+my_list[-2]
+```
+
+1.
+b. __list 2__
+
+```{r list 2}
+# Named List within a list
+
+name <- list(Last= "Williams", First= "Serena")
+name
+
+record <- c(801, 136)
+#now assign names for meaning, notice these are character strings
+names(record) <- c("wins", "losses")
+record
+
+grand.slam.wins <- list(Australian.Open= c(2003, 2005, 2007, 2009, 2010, 2015, 2017), French.Open= c(2002, 2013, 2015), Wimbeldon= c(2002, 2003, 2009, 2010, 2012, 2015, 2016), US.Open= c(1999, 2002, 2008, 2012, 2013, 2014))
+
+cat("\n")
+tennis_list <- list(name=name, age=c(36), record=record, grand.slam.wins=grand.slam.wins)
+tennis_list
+
+cat("\n")
+str(grand.slam.wins)
+```
+grand.slam.wins is not structured as a data frame or matrix because it was input as a list composed of 4 numeric vectors.
+
+2. __cbind, rbind__
+
+
+
+Addressing applies to matrices and data frames in much the same way as to vectors.
+
+```{r vector and matrix}
+# 'data' is a vector
+# 'nrow' gives the number of rows
+# 'ncol' gives the number of columns
+# 'byrow' by default is FALSE, so data is read in column-wise
+v1 <- c(3, 5, 6, 12)
+v1
+
+cat("\n")
+v2 <- c(T, F, T, T)
+v2
+
+cat("\n")
+v3 <- c("A", "B", "C", "D", "E")
+v3
+
+cat("\n")
+mat <- matrix(data = seq(2, 32, by = 3), nrow = 4, ncol = 5)
+##default is byrow = F <- fills columns first
+mat
+##because there are more spots in the matrix than the length of the sequence, the sequence starts over until it runs out of space in the matrix
+
+cat("\n")
+mat1 <- matrix(data = c(1, -1, 1, 0, 0, 0, -1, 1), 2, 4, T)
+mat1
+##do not need to specify nrow = , ncol = , or byrow = ...can just put number of rows,columns,T
+```
+
+2. __Matrices__
+a) __cbind__
+
+create matrices using the vectors and matrices created above.
+
+```{r cbind}
+#  Extract a subsets from the previous matrices and bind them into a single matrix.
+##avoid naming a column by extracting vector values
+
+cbind(v1[1:4],v2)
+cat("\n")
+
+m3<- matrix(cbind(v3,v2), 5, 2)
+m3
+##as before, because the matrix is larger than the sequence of v2, the sequence starts over until it runs out of space in the matrix
+
+cat("\n")
+cbind(mat,v1[1:4])
+##by just using cbind() the 6th column is named v1, the name is removed by calling the vector values using [] 
+```
+
+2. __Matrices__
+c) __rbind__
+
+create matrices using the vectors and matrices used above, but this time bind them by rows rather than by columns
+
+```{r rbind}
+rbind(mat[1:4,1:4],mat1)
+cat("\n")
+
+rbind(v1[1:4],mat1)
+cat("\n")
+
+rbind(v1,v2,v3)
+```
+3. 
+a) __Read in Iris data__
+
+```{r Iris}
+iris <- read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data", header=F)
+head(iris)
+#first row is not a header <- added header=F
+##need to name columns
+colnames(iris) <- c("sepal.length.(cm)", 
+                    "sepal.width.(cm)", 
+                    "petal.length.(cm)", 
+                    "petal.width.(cm)", 
+                    "class")
+###tried to add a little style for ease of reading... Enter automatically spaces/lines text
+head(iris)
+```
+3.
+b) __summaries__
+
+```{r summaries}
+iris$class<-as.factor(iris$class)
+i1 <- iris[iris$class == "Iris-versicolor",]
+##the , after "Iris-versicolor" specifies the column 
+summary(i1)
+head(i1)
+cat("\n")
+i2 <- iris[iris$`petal.width.(cm)` > 1.5 | iris$`sepal.width.(cm)` > 3.0, ]
+##I am not sure why the column names needed quotes ' ' when class did not... perhaps because of the () in the name... same thing was needed when spaces were in name, so I replaced them with .
+i2
+summary(i2)
+cat("\n")
+
+#separate by class and look at petal width
+i3 <- iris[iris$class == "Iris-setosa",]
+summary(i3)
+i4 <- iris[iris$class == "Iris-virginica",]
+summary(i4)
+```
+
+Iris petal width increases in alphabetical order (the order listed in summary()).  
+As iris petal width decreases, sepal width increases.
+
+4. __Cars__
+a) __Read in cars data__
+
+```{r cars}
+car<- read.table("car.txt", header=T, stringsAsFactors=T)
+##because car data is .txt not .csv and separated by something different than a comma, data can not be read.csv must be read.table
+##data consists entirely of categorical data, stringsAsFactors=T turns all data into factors 
+head(car)
+summary(car)
+```
+
+4.
+b) __remove missing values__
+
+```{r}
+
+#remove rows with NA positions
+dim(na.omit(car))
+summary(na.omit(car))
+##na.omit removes rows with NA
+
+#      dim(car[!is.na(car), ])
+##for some reason this added rows (a lot of rows)
+#        dim(car[is.na(car),])
+##shows 10 entries with NA (that can be removed by na.omit())
+```
+
+4.
+c) __remove duplicates__
+
+```{r}
+summary(car[!duplicated(car), ])
+dim(car[!duplicated(car), ])
+```
+
