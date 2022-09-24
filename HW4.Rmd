@@ -1,0 +1,267 @@
+---
+title: "AFS 505 HW4"
+author: "Aaron Appleby"
+date: "2022-09-20"
+output: pdf_document
+---
+
+#HW4
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. __Functions__
+a) __trim.CV__
+
+
+```{r trim.CV}
+
+# Create a function with the **function()** command, then use the function with the assigned name. A function can execute one or more *expressions* through the use of curly brackets {}.
+
+## > function_name <- function(arg_1, arg_2, ...) {
+##   Function body
+##   }
+
+
+# x = input dataframe
+trim.CV <- function(x) {
+  Q3 <- quantile(x,0.75)
+  Q1 <- quantile(x,0.25)
+  IQR <- IQR(x)
+  trim <- !((x-Q3)>1.5*IQR | (Q1-x)>1.5*IQR)       
+   #after trimming the input x of outliers, compute coeficient of variation
+  return(sd(trim)/mean(trim))
+}
+
+
+
+#trim <- iris[!((iris$'sepal.width.(cm)' - Q3) >  1.5*IQR |  (Q1 - iris$`sepal.width.(cm)`) > 1.5*IQR), ]
+#trim 
+#iris$`sepal.widt=h.(cm)`
+#head(iris)
+#str(trim$`sepal.width.(cm)`)
+#grep(4.2, trim$`sepal.width.(cm)`, ignore.case=T)
+
+
+
+#boxplot(iris$`sepal.width.(cm)`)
+```
+
+1.
+b) __apply TrimCV to sepal width__
+
+```{r trim sepal width}
+# Call in Data Set iris
+iris <- read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data", header=F)
+head(iris)
+#first row is not a header <- added header=F
+##need to name columns
+colnames(iris) <- c("sepal.length", 
+                    "sepal.width", 
+                    "petal.length", 
+                    "petal.width", 
+                    "class"
+                    )
+# Apply TrimCV function to sepal width from iris data set.
+trim.CV(iris$sepal.width)
+```
+
+2.
+a. __tapply__
+
+Use tapply() to compute group standard deviations for petal width, grouping by variety. Comment briefly on results.
+
+The **tapply()** functions is in the **apply()** family of functionals. This function allows you to apply a function to a vector of data by one or more grouping variables. 
+
+So, for example, if you have petal width measurements as a variable in the iris dataframe and a second vector (or dataframe variable) with the variety (iris$class) for each measurement, then you could use **tapply()** to compute the mean, median or some other function by variety (iris$class).
+
+The grammar of **tapply()** is as follows:
+
+> tapply(X, INDEX, FUN, …)
+> 
+> X = vector or dataframe column
+> INDEX = grouping variable (factor or coerced to factor)
+> FUN = function to be applied
+
+
+```{r tapply}
+petal.width.sd <- with (iris, tapply(petal.width, INDEX=class, FUN=sd))
+petal.width.sd
+
+#petal.width.sd <-  tapply(iris$petal.width, INDEX=iris$class, FUN=sd)
+
+## gives the same output as above using with()
+## without with() you need to identify where the named column is from
+```
+Standard deviations of iris petal width follows the same pattern as mean with Iris-setosa having the smallest standard deviation, and Iris-virginica having the largest standard deviation. 
+
+2.
+b) __aggregate__
+
+Use aggregate() with standard specification to compute group medians for all numerical variables in the iris dataset, grouping by variety. Comment briefly on results.
+
+The **aggregate()** function provides an extension of **tapply()** to dataframes. Whereas **tapply()** applies a function by a grouping variable or variables to a vector, **aggregate()** applies a function by a grouping variable or variables to multiple columns (variables) in a dataframe.
+
+There are two ways to formulate an aggregate call as discussed below.
+
+## standard aggregate() call
+
+> aggregate(x, by, FUN, …)
+> 
+> x = dataframe
+> by = grouping variable or list of grouping variables (factor or coerced to factor)
+> FUN = function to be applied
+
+Keep in mind that you might need to select a subset of dataframe columns that are appropriate for the function being applied.
+
+```{r aggregate}
+aggregate(iris[,-5], by=list(iris$class),FUN=mean)
+```
+Without removing columns that do not have numeric values, aggregate returns NA. In this format, it is easy to see that petal width and length are correlated. Something else I did not realize until I saw this new table was sepal length follows the same pattern as petal measurements, with the smallest measurements for I-setosa.
+
+
+3. 
+a) __apply__
+ 
+Use the apply() function to compute column-wise sums of numerical data in the iris dataset.
+
+For many operations, the **apply** function is the most efficient way to accomplish your data analysis task.
+
+The **apply()** function is one of many *functionals* in R. These are functions that include other functions in parameterization.
+
+The **apply()** function, which operates on matrices or arrays (3 or more dimensions with the same data type), can often a more efficient way to accomplish tasks that might otherwise be implemented with a control loop (e.g. for, while). The basic format of the apply command is as follows:
+
+> apply(X, MARGIN, FUN, …)
+> 
+> X = matrix or array (data)
+> MARGIN = dimension over which to apply the function (1 = row, 2 = column)
+> FUN = function to be applied
+> Note that the '...' designation provides a way to pass through parameters to the function.
+
+## column-wise apply operations
+
+```{r iris sum by column}
+iris.sum <- apply(iris[,-5], MARGIN=2, FUN=sum)   # Margin=2 <- apply to column
+iris.sum
+
+#for style and to increase visual appeal, the matrix can be turned into a data frame and manipulated to your desire
+#data.frame(iris.sum)
+#data.frame("iris measurement"=names(iris.sum),'sum of values'=iris.sum, row.names=NULL)
+#data.frame(t(iris.sum))
+```
+
+3.
+b) __Length/Width__
+
+Use a for loop to compute the following ratio for each observation (row) in the iris dataset:
+
+iris.ratio = (sepal.lenth+petal.length)/(sepal.width+petal.width)
+
+What fraction of observations have a ratio > 2.5 ? (Note: you can write this as a for loop without embedding in a function.)
+
+A **for()** statement is commonly used to iteratively loop through a code sequence. The format of this is as follows:
+
+> for (*variable.name* in *sequence expression*) *expression*
+
+Or more commonly:
+
+> for (*variable.name* in *sequence expression*) {
+>  *expression 1*
+>  *expression 2*
+>  *expression 3*
+>  }
+
+
+```{r length/width}
+
+Ilxw <- rep(150) #create a repository to hold following for loop observations
+
+for(i in 1:nrow(iris)){
+Ilxw[i] <- (iris[i,1]+iris[i,3])/(iris[i,2]+iris[i,4])
+}
+
+Ilxw
+
+Ilxw2.5<-Ilxw [Ilxw> 2.5]
+str(Ilxw2.5)
+```
+39/150 is the fraction of observations with length/width ratios greater than 2.5
+
+3.
+c) __apply__
+
+```{r apply instead of loop}
+lxw <- function(x) {
+  lw<-((x[1]+x[3])/(x[2]+x[4]))
+       return(lw)
+}
+#iris.ratio = (iris$sepal.length+iris$petal.length)/(iris$sepal.width+iris$petal.width)
+###above code does the same as the loop and apply...
+#iris.ratio
+
+iris.lxw <- apply(iris[,-5], MARGIN=1, FUN=lxw)
+iris.lxw   
+```
+
+4.
+a) __read in data set__
+
+```{r ecoli}
+# Call in Data Set ecoli
+ecoli<- read.table("https://archive.ics.uci.edu/ml/machine-learning-databases/ecoli/ecoli.data", header=F, stringsAsFactors=T)
+colnames(ecoli) <- c("Sequence Name", 
+                    "mcg", 
+                    "gvh", 
+                    "lip", 
+                    "chg",
+                    "aac",
+                    "alm1",
+                    "alm2",
+                    "class")
+#https://archive.ics.uci.edu/ml/machine-learning-databases/ecoli/ecoli.names states that there are 8 variables; however, the data set that I read in has 9
+head(ecoli)
+```
+
+4.
+b) __lapply() and sapply()__
+
+The **lapply()** and **sapply()** functions are both in the **apply()** family of functionals. The basic function is **lapply()** with the **sapply()** being a *wrapper* function that generates results in a format more appropriate for some uses.
+
+In a nutshell, **lapply()** uses apply for a list, data.frame (special kind of list) or vector. There is no MARGIN as the function FUN is applied to each element sequentially.
+
+> lapply(X, FUN, …)
+> 
+> X = list, vector or dataframe (data)
+> FUN = function to be applied
+> Note that the '...' designation provides a way to pass through parameters to the function.
+
+
+```{r lapply sapply}
+lapply(ecoli[,2:8],FUN=sum)
+# automatically applies the function to columns first
+##gives output in the form of a list
+
+sapply(ecoli[,2:8],FUN=sum)
+# also automatically applies the function to columns first
+##gives the output in the form of a vector
+
+data.class(lapply(ecoli[,2:8],FUN=mean))## lapply gives output in the form of a list
+data.class(sapply(ecoli[,2:8],FUN=mean))## sapply gives the output in the form of a vector (numeric in this case)
+
+
+```
+Both lapply() and sapply() automatically apply the specified function to columns first.  lapply() returns the output in the form of a list.  sapply() returns the output in the form of a vector.
+
+
+4.
+c) __mean using sapply__
+
+```{r}
+sapply(ecoli[,2:8],FUN=mean)
+apply(ecoli[,2:8], 2, mean)
+data.class(apply(ecoli[,2:8], 2, mean))
+```
+Both sapply and apply return the output as a numerical vector in this case.  sapply automatically applies the function to columns first where apply you must specify either row or column to apply the function.  The results are similar because both sapply and apply are being applied to a data frame, there would be some differences if ecoli was a matrix rather than a data frame, as sapply treats every value in the matrix as an element in the list (essentially coerces the matrix into a vector). 
+
