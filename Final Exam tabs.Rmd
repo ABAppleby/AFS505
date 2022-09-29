@@ -1,0 +1,312 @@
+---
+title: "AFS 505 Final Exam"
+author: "Aaron Appleby"
+date: "2022-09-26"
+output: html_document
+---
+
+# __Final Exam__
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. 
+What are the basic R data structures? 
+  - What are the differences between them? 
+  - In what context would you use one versus the other?
+
+The basic R data structures are:  
+- __Vectors__  
+- __Lists__  
+- __Data Frame__  
+- __Matrices__  
+- __Arrays__  
+- __Factors__  
+
+A factor looks like a character and can contain different data types, but is stored as an integer, allowing for more versatility. I believe the table below best describes the differences between the data structures.
+
+Dimensions | Same Data Type | Different Data Type | 
+|-------:|:------|:---------:| 
+| 1 | Vector | list | 
+| 2 | Matrix | Data Frame |
+| 3 | Array | |
+
+_Atomic vectors_ are the simplistic data structures composed entirely of the same data type.  _Lists_ are not often used, but they are great for returning values from functions that give multiple object output. Lists can be lists of vectors, lists of data frames, list of matrices, etc.  _Data Frames_ are the most popular and often used for statistics. Data frames are so popular because they are familiar and easily interpreted and can contain multiple data types as long as a single column is composed of a single data type.  _Arrays_ and _Matrices_ are multi-dimensional data structures composed of a single data type, most often integers, because of the single data type they are used in high level math and computer science.  _Factors_ are used to categorize data and store it as levels, this is helpful for statistics.
+
+
+
+## 2 {.tabset} 
+### __a) & b)__
+
+a) Iterate through the folders to read all the files and merge them into a single data frame. You can use a “loop” to iterate or for efficiency check out the list.files() function.
+ 
+b) Add four additional columns to the merged dataframe corresponding to the
+county name, crop name, latitude and longitude of the data. You must get this
+information from the directory structure you are looping through or the strings
+returned by the call to list.files() 
+ 
+```{r data frame}
+
+##Reading each file separately by changing the working directory each time to read a new file is time consuming and not efficient
+
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Okanogan/Corn-grain/48.15625N119.71875W/")
+#read file and save as OC1 so it can be manipulated later
+###OC1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(OC1)
+
+#change working directory to read the next corn .csv from Okanogan
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Okanogan/Corn_grain/48.96875N119.65625W")
+#read file and save as OC2 so it can be manipulated later
+###OC2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(OC2)
+
+#change working directory to read the wheat .csv(s) from Okanogan
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Okanogan/Winter_Wheat/48.15625N119.71875W/")
+#read file and save as OW1 so it can be manipulated later
+###OW1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(OW1)
+
+#change working directory to read the next wheat .csv from Okanogan
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Okanogan/Winter_Wheat/48.53125N119.59375W/")
+#read file and save as OW2 so it can be manipulated later
+###OW2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(OW2)
+
+#change working directory to read the corn .csv(s) from Walla Walla
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/WallaWalla/Corn_grain/46.03125N118.21875W/")
+#read file and save as WWC1 so it can be manipulated later
+###WWC1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(WWC1)
+
+#change working directory to read the next corn .csv from Walla Walla
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/WallaWalla/Corn_grain/46.28125N118.65625W/")
+#read file and save as WWC2 so it can be manipulated later
+###WWC2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(WWC2)
+
+#change working directory to read the wheat .csv(s) from Walla Walla
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/WallaWalla/Winter_Wheat/46.03125N118.21875W/")
+#read file and save as WWW1 so it can be manipulated later
+###WWW1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(WWW1)
+
+#change working directory to read the next wheat .csv from Walla Walla
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/WallaWalla/Winter_Wheat/46.03125N118.40625W/")
+#read file and save as WWW2 so it can be manipulated later
+###WWW2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(WWW2)
+
+#change working directory to read the corn .csv(s) from Yakima
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Yakima/Corn_grain/46.15625N119.96875W/")
+#read file and save as YC1 so it can be manipulated later
+###YC1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(YC1)
+
+#change working directory to read the next corn .csv from Yakima
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Yakima/Corn_grain/46.21875N119.34375W/")
+#read file and save as YC2 so it can be manipulated later
+###YC2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(YC2)
+
+#change working directory to read the wheat .csv(s) from Yakima
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Yakima/Winter_Wheat/46.15625N119.34375W/")
+#read file and save as YW1 so it can be manipulated later
+###YW1<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(YW1)
+
+#change working directory to read the next wheat .csv from Yakima
+###setwd("~/Ph.D/R/Git/AFS505git/CropModelResults/Yakima/Winter_Wheat/46.21875N119.34375W/")
+#read file and save as YW2 so it can be manipulated later
+###YW2<- read.csv("seasonal_result.csv", header=T) 
+#making sure everything looks correct and headers are correct
+###head(YW2)
+
+###list.files(recursive = TRUE, pattern = ".csv")
+```
+
+using list.files()
+```{r merge data}
+#shows all files in working directory and subdirectories with .csv
+
+#list.files(recursive = TRUE, pattern = ".csv")
+
+#create a dataset by merging the .csv files in all subdirectories of working directory
+file_list <- list.files(recursive = T, pattern = ".csv")
+#create a repository to bind read files <-NULL creates an empty data set
+dataset <- NULL
+# create a temporary dataset out of each file and merge them into empty dataset we created earlier
+
+for (file in file_list){
+   
+  if (exists("dataset")){
+    temp_dataset <-read.csv(file, header=TRUE)
+    #add a new column containing the file name which we will separate into several different columns later
+    temp_dataset <-cbind(temp_dataset, file) 
+    #subset dataset$file column 
+    temp_dataset$county_name<-strsplit(temp_dataset$file,"/")[[1]][3]
+    temp_dataset$crop<-strsplit(temp_dataset$file, "/")[[1]][4]
+    temp_dataset$GPS<-strsplit(temp_dataset$file, "/")[[1]][5]
+    
+    #bind the next file to the existing dataset
+    dataset<-rbind(dataset, temp_dataset)
+    #remove the temporary dataset we created to reduce confusion in for loop
+    rm(temp_dataset)
+  }
+}
+#making sure that the headers are as I expect... for the previous code to work, CropModelResults unzipped into a folder called CropModelResults, so there is a folder within a folder both named the same... if there is only one CropModelResults file in the working directory the previous code splitting the file column will be as follows:
+#    temp_dataset$county_name<-strsplit(temp_dataset$file,"/")[[1]][2]
+#    temp_dataset$crop<-strsplit(temp_dataset$file, "/")[[1]][3]
+#    temp_dataset$Lat.Lon<-strsplit(temp_dataset$file, "/")[[1]][4]
+
+#head(dataset)
+
+#latitude and longitude are still a single column
+#need to separate latitude and longitude which are each 9 & 10 characters respectively
+dataset$latitude <- substring(dataset$GPS, first=1, last=9)
+dataset$longitude <- substring(dataset$GPS, first=10, last=19)
+dataset$year<-substring(dataset$YYYY.MM.DD.DOY., first=1, last=4)
+#now to get rid of the unwanted columns
+fileless_dataset<-dataset[,-8]
+
+#checking to see that the headers I want are there and the headers I don't want are not there
+#head(fileless_dataset)
+```
+ 
+### __c__
+
+Rename the column irrig to irrigation_demand and precip to precipitation and
+export the dataframe as a csv file.
+
+```{r rename}
+
+#renaming the columns in the manipulated dataset and non manipulated dataset
+names(fileless_dataset)[6] <- "irrigation_demand"
+names(fileless_dataset)[7] <- "precipitation"
+
+names(dataset)[6] <- "irrigation_demand"
+names(dataset)[7] <- "precipitation"
+
+#check to see if names were changed properly
+#head(dataset)
+
+#export dataset
+write.csv(dataset, "CropModel.csv", row.names=F, quote=F)
+write.csv(fileless_dataset, "fileless_CropModel.csv", row.names=F, quote=F)
+```
+
+### __d__
+
+Summarize the annual irrigation demand by crop name and county name.
+
+```{r summarize irrigation}
+
+irrigation <- with (dataset, tapply(irrigation_demand, INDEX=list(crop, county_name), FUN=mean))
+summary(irrigation)
+
+cat("\n")
+#visualization of summary(irrigation)
+boxplot(dataset$irrigation_demand~dataset$crop, xlab= "Crop", ylab = "Irrigation Demand", main= "Irrigation Demand by Crop")
+
+##preparing the dataset to be used in statistical analysis
+#irig_by_crop <- lm (dataset$irrigation_demand~dataset$crop)
+#plot(irig_by_crop)
+#summary(irig_by_crop)
+```
+
+### __e__
+
+ What is the average yield of Winter Wheat in Walla Walla at 46.03125N118.40625W for the year ranges (1981-1990), (1991-2000), and (2001-2019)?
+
+```{r Winter Wheat Yield}
+
+#filters out only wheat in Walla Walla at 46.03125N118.40625W
+WWwheat <- dataset[fileless_dataset$GPS == "46.03125N118.40625W",]
+
+#averages wheat yield by year, getting rid of the rest of dataset
+wheat_yield <- with (WWwheat, tapply(yield, INDEX=list(year, crop), FUN=mean))
+
+#average of average wheat yield in Walla Walla at 46.03125N118.40625W from 1981-1990
+wi1<-wheat_yield[1:10,] 
+m90<-mean(wi1)
+
+y90 <- paste("the average wheat yield in Walla Walla at 46.03125N118.40625W from 1981-1990 is: ", m90, ".", sep="")
+y90
+
+cat("\n")
+#average of average wheat yield in Walla Walla at 46.03125N118.40625W from 1991-2000
+wi2<-wheat_yield[11:20,]
+m00<-mean(wi2)
+
+y00 <- paste("the average wheat yield in Walla Walla at 46.03125N118.40625W from 1991-2000 is: ", m00, ".", sep="")
+y00
+
+cat("\n")
+#average of average wheat yield in Walla Walla at 46.03125N118.40625W from 2001-2019
+wi3<-wheat_yield[21:39,]
+m19<-mean(wi3)
+
+y19 <- paste("the average wheat yield in Walla Walla at 46.03125N118.40625W from 2001-2019 is: ", m19, ".", sep="")
+y19
+```
+
+
+### __f__
+
+ Which location has highest yield (average) for the time period (2001-2019) for
+grain corn?
+
+```{r}
+
+#only look at rows with Corn_grain
+corn <- dataset[dataset$crop == "Corn_grain",]
+
+#average corn yield across county and year
+corn_yield <- with(corn, tapply(yield, INDEX = list(county_name, year), FUN=mean))
+
+#average of average corn yield by county from 2001-2019
+cy<-corn_yield[1:3,22:40]
+apply(cy, 1, mean)
+c19<- apply(cy, 1, mean)
+
+#paste the answer
+cat("\n")
+cy19 <- paste("Yakima has the highest (average) corn yield from 2001-2019 at: ", c19[3], ".", sep="")
+cy19
+  
+#the long way to add average corn yield for each county from 2001-2019
+#ave_corn_yield <- (corn_yield[,22]+corn_yield[,23]+corn_yield[,24]+corn_yield[,25]+corn_yield[,26]+corn_yield[,27]+corn_yield[,28]+corn_yield[,29]+corn_yield[,30]+corn_yield[,31]+corn_yield[,32]+corn_yield[,33]+corn_yield[,34]+corn_yield[,35]+corn_yield[,36]+corn_yield[,37]+corn_yield[,38]+corn_yield[,39]+corn_yield[,40])/19
+#ave_corn_yield
+#add_corn_yield <- corn_yield[,22]+corn_yield[,23]+corn_yield[,24]+corn_yield[,25]+corn_yield[,26]+corn_yield[,27]+corn_yield[,28]+corn_yield[,29]+corn_yield[,30]+corn_yield[,31]+corn_yield[,32]+corn_yield[,33]+corn_yield[,34]+corn_yield[,35]+corn_yield[,36]+corn_yield[,37]+corn_yield[,38]+corn_yield[,39]+corn_yield[,40]
+#total yield and average yield give the same county with the highest yield for the time period (2001-2019)
+#add_corn_yield
+#need to adjust year as not all files had 40 observations
+```
+
+
+
+### __github link__
+ 
+  https://github.com/ABAppleby/AFS505
+
+## {-}
+  
+## 3. 
+Was the data provided to you well described? 
+  - If not, what information was missing? 
+  - Comment on what kind of metadata (description about the data) should be included as best practice while sharing datasets?
+
+The data was not very well described and much of the information describing the data was either missing or difficult to interpret. The headers, or column names, did not include units making the interpreter of the data have to assume how the data was collected and measured. The headers were also presented in several different formats, from all capitalized to no capitalization; with some headers written in snake text and others abbreviated. Planting date and harvest date are just a string of numbers without any key to interpret the string of numbers. When sharing data with others, the data needs to speak for itself and not need any interpretation such as units, abbreviations, and should include notes about the experimental set up and how the data was collected.
+
